@@ -1,0 +1,88 @@
+<project name="ForgeStory" basedir="." default="build">
+	<target name="init">
+		<property file="build.properties"/>
+		
+		<taskdef resource="flexTasks.tasks" classpath="${FLEX_TASKS}"/>
+		
+		<mkdir dir="${tests.output}"/>
+	</target>
+	
+	<target name="compileClient" depends="init">
+		<mkdir dir="${build.url}"/>
+		<mxmlc file="${client.src}/${client.mainClass}"
+				output="${build.url}/${server.config.mainSWF}">
+				<load-config filename="${FLEX_HOME}/frameworks/flex-config.xml"/>
+				<source-path path-element="${FLEX_HOME}/frameworks"/>
+				<source-path path-element="${client.src}"/>
+				<compiler.library-path dir="${FLEX_HOME}/frameworks" append="true">
+					<include name="libs"/>
+					<include name="../bundles/{locale}"/>
+				</compiler.library-path>
+				<compiler.library-path dir="${client.libs}" append="true">
+					<include name="*.swc"/>
+				</compiler.library-path>
+				<default-size width="760" height="480"/>
+		</mxmlc>
+	</target>
+	
+	<target name="compileServer" depends="init">
+		<copy todir="${build.url}">
+			<fileset dir="${server.src}"/>
+		</copy>
+	</target>
+	
+	<target name="build" depends="compileServer, compileClient">
+		<replace dir="${build.url}">
+            <replaceFilter token="@appId@" value="${server.config.appId}" />
+			<replaceFilter token="@appSecret@" value="${server.config.appId}" />
+			<replaceFilter token="@redirectURL@" value="${server.config.redirectURL}" />
+			<replaceFilter token="@baseDirectory@" value="${server.config.baseDirectory}" />
+			<replaceFilter token="@mainSWF@" value="${server.config.mainSWF}" />
+			<replaceFilter token="@dbUserName@" value="${server.config.dbUserName}" />
+			<replaceFilter token="@dbPassword@" value="${server.config.dbPassword}" />
+			<replaceFilter token="@dbName@" value="${server.config.dbName}" />
+		</replace>
+	</target>
+	
+	<target name="compileunittests" depends="init">
+		<mxmlc file="${basedir}/src/tests/TestRunner.as"
+			output="${BUILD_FOLDER}/TestRunner.swf">
+			<load-config filename="${FLEX_HOME}/frameworks/flex-config.xml"/>
+			<source-path path-element="${FLEX_HOME}/frameworks"/>
+			<source-path path-element="${SRC_FOLDER}"/>
+			<compiler.library-path dir="${FLEX_HOME}/frameworks" append="true">
+				<include name="libs"/>
+				<include name="../bundles/{locale}"/>
+			</compiler.library-path>
+			<compiler.library-path dir="${basedir}" append="true">
+				<include name="libs"/>
+			</compiler.library-path>
+			<compiler.verbose-stacktraces>true</compiler.verbose-stacktraces>
+            <compiler.headless-server>true</compiler.headless-server>
+		</mxmlc>
+	</target>
+	
+	<target name="runtests" depends="compileunittests">
+		<!-- Execute FlexUnit tests and publish reports -->
+		<flexunit 
+			workingDir="${BUILD_FOLDER}"
+			swf="${BUILD_FOLDER}/TestRunner.swf"
+		    toDir="${TESTS_OUTPUT}" 
+			haltonfailure="false" 
+			verbose="false"
+			localTrusted="true"	>
+	   </flexunit>
+
+		<!-- Generate readable JUnit-style reports -->
+		<junitreport todir="${TESTS_OUTPUT}">
+			<fileset dir="${TESTS_OUTPUT}">
+				<include name="TEST-*.xml" />
+			</fileset>
+			<report format="frames" todir="${TESTS_OUTPUT}/html" />
+		</junitreport>
+	</target>
+	
+	
+	<target name="ccrun" depends="build, runtests">
+	</target>
+</project>

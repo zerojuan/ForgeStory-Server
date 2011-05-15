@@ -1,0 +1,23 @@
+#build properties for building the PaintApp project
+FLEX_HOME = D:/flex_4
+FLEX_TASKS = ${FLEX_HOME}/ant/lib
+
+server.root = D:/workspace-php/ForgeStory
+server.src = ${server.root}/src
+server.config.appId = 1111111111
+server.config.appSecret = 2222222222
+server.config.redirectURL = apps.facebook.com/forgestorydev
+server.config.baseDirectory = codeanginamo.com/forgestorydev
+server.config.mainSWF = ForgeStory.swf
+server.config.dbUserName = root
+server.config.dbPassword = password
+server.config.dbName = forgestory_db
+
+build.url = C:/xampp/htdocs/forgestory
+
+tests.output = C:/xampp/htdocs/tests
+
+client.root = D:/workspace-pbe/DangerItems
+client.src = ${client.root}/src
+client.libs = D:/as-lib
+client.mainClass = DangerItems.as
