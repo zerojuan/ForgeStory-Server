@@ -1,6 +1,9 @@
 <project name="ForgeStory" basedir="." default="build">
 	<target name="init">
-		<property file="build.properties"/>
+		<propertyfile file="build.properties">
+			<entry key="build.number" type="int" operation="+" value="1" pattern="00"/>
+		</propertyfile>
+		<property file = "build.properties"/>
 		
 		<taskdef resource="flexTasks.tasks" classpath="${FLEX_TASKS}"/>
 		
@@ -21,24 +24,48 @@
 				<compiler.library-path dir="${client.libs}" append="true">
 					<include name="*.swc"/>
 				</compiler.library-path>
+				<static-link-runtime-shared-libraries>true</static-link-runtime-shared-libraries>
 				<default-size width="760" height="480"/>
 		</mxmlc>
 	</target>
 	
 	<target name="compileServer" depends="init">
-		<copy todir="${build.url}">
-			<fileset dir="${server.src}"/>
+		<copy todir="${build.url}" overwrite="true">
+			<fileset dir="${server.src}">
+				<include name="*.*"/>
+			</fileset>
+		</copy>
+		<copy todir="${gateway.url}">
+			<fileset dir="${server.src}/services">
+			</fileset>
+		</copy>
+		<copy todir="${gateway.url}" flatten="true">
+			<resources>
+				<file file="${server.src}/config.php"/>
+				<file file="${server.src}/database.php"/>
+				<file file="${server.src}/facebook.php"/>
+			</resources>
 		</copy>
 	</target>
 	
 	<target name="build" depends="compileServer, compileClient">
 		<replace dir="${build.url}">
             <replaceFilter token="@appId@" value="${server.config.appId}" />
-			<replaceFilter token="@appSecret@" value="${server.config.appId}" />
+			<replaceFilter token="@appSecret@" value="${server.config.appSecret}" />
 			<replaceFilter token="@redirectURL@" value="${server.config.redirectURL}" />
 			<replaceFilter token="@baseDirectory@" value="${server.config.baseDirectory}" />
 			<replaceFilter token="@mainSWF@" value="${server.config.mainSWF}" />
-			<replaceFilter token="@dbUserName@" value="${server.config.dbUserName}" />
+			<replaceFilter token="@dbUsername@" value="${server.config.dbUserName}" />
+			<replaceFilter token="@dbPassword@" value="${server.config.dbPassword}" />
+			<replaceFilter token="@dbName@" value="${server.config.dbName}" />
+		</replace>
+		<replace dir="${gateway.url}">
+		    <replaceFilter token="@appId@" value="${server.config.appId}" />
+			<replaceFilter token="@appSecret@" value="${server.config.appSecret}" />
+			<replaceFilter token="@redirectURL@" value="${server.config.redirectURL}" />
+			<replaceFilter token="@baseDirectory@" value="${server.config.baseDirectory}" />
+			<replaceFilter token="@mainSWF@" value="${server.config.mainSWF}" />
+			<replaceFilter token="@dbUsername@" value="${server.config.dbUserName}" />
 			<replaceFilter token="@dbPassword@" value="${server.config.dbPassword}" />
 			<replaceFilter token="@dbName@" value="${server.config.dbName}" />
 		</replace>

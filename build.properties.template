@@ -2,6 +2,8 @@
 FLEX_HOME = D:/flex_4
 FLEX_TASKS = ${FLEX_HOME}/ant/lib
 
+build.number=00
+
 server.root = D:/workspace-php/ForgeStory
 server.src = ${server.root}/src
 server.config.appId = 1111111111
@@ -14,6 +16,8 @@ server.config.dbPassword = password
 server.config.dbName = forgestory_db
 
 build.url = C:/xampp/htdocs/forgestory
+
+gateway.url=C:/xampp/htdocs/flashservices/ForgeServices
 
 tests.output = C:/xampp/htdocs/tests
 
