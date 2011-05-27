@@ -15,16 +15,16 @@
  		 var $taken;
  		 var $description;
  		 
- 		 var $_explicitType = "model.Item";
+ 		 var $_explicitType = "Item";
  		 
  		 function fill($result){
- 		 	$id = $result["id"];
- 		 	$name = $result["name"];
- 		 	$forgerId = $result["forger_id"];
- 		 	$price = $result["price"];
- 		 	$type = $result["type"];
- 		 	$taken = $result["taken"];
- 		 	$description = $result["description"];
+ 		 	$this->id = $result["id"];
+ 		 	$this->name = $result["name"];
+ 		 	$this->forgerId = $result["forger_id"];
+ 		 	$this->price = $result["price"];
+ 		 	$this->type = $result["type"];
+ 		 	$this->taken = $result["taken"];
+ 		 	$this->description = $result["description"];
  		 }
  	}
 ?>

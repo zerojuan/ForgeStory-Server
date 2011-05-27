@@ -1,4 +1,4 @@
-<project name="ForgeStory" basedir="." default="build">
+<project name="ForgeStory" basedir="." default="debugbuild">
 	<target name="init">
 		<propertyfile file="build.properties">
 			<entry key="build.number" type="int" operation="+" value="1" pattern="00"/>
@@ -39,7 +39,7 @@
 			<fileset dir="${server.src}/services">
 			</fileset>
 		</copy>
-		<copy todir="${gateway.url}" flatten="true">
+		<copy todir="${gateway.url}" flatten="true" overwrite="true">
 			<resources>
 				<file file="${server.src}/config.php"/>
 				<file file="${server.src}/database.php"/>
@@ -48,27 +48,51 @@
 		</copy>
 	</target>
 	
-	<target name="build" depends="compileServer, compileClient">
+	<target name="replaceTokens" depends="init">
 		<replace dir="${build.url}">
-            <replaceFilter token="@appId@" value="${server.config.appId}" />
-			<replaceFilter token="@appSecret@" value="${server.config.appSecret}" />
-			<replaceFilter token="@redirectURL@" value="${server.config.redirectURL}" />
-			<replaceFilter token="@baseDirectory@" value="${server.config.baseDirectory}" />
-			<replaceFilter token="@mainSWF@" value="${server.config.mainSWF}" />
-			<replaceFilter token="@dbUsername@" value="${server.config.dbUserName}" />
-			<replaceFilter token="@dbPassword@" value="${server.config.dbPassword}" />
-			<replaceFilter token="@dbName@" value="${server.config.dbName}" />
+		        <replaceFilter token="@appId@" value="${server.config.appId}" />
+				<replaceFilter token="@appSecret@" value="${server.config.appSecret}" />
+				<replaceFilter token="@redirectURL@" value="${server.config.redirectURL}" />
+				<replaceFilter token="@baseDirectory@" value="${server.config.baseDirectory}" />
+				<replaceFilter token="@mainSWF@" value="${server.config.mainSWF}" />
+				<replaceFilter token="@dbUsername@" value="${server.config.dbUserName}" />
+				<replaceFilter token="@dbPassword@" value="${server.config.dbPassword}" />
+				<replaceFilter token="@dbName@" value="${server.config.dbName}" />
 		</replace>
 		<replace dir="${gateway.url}">
-		    <replaceFilter token="@appId@" value="${server.config.appId}" />
-			<replaceFilter token="@appSecret@" value="${server.config.appSecret}" />
-			<replaceFilter token="@redirectURL@" value="${server.config.redirectURL}" />
-			<replaceFilter token="@baseDirectory@" value="${server.config.baseDirectory}" />
-			<replaceFilter token="@mainSWF@" value="${server.config.mainSWF}" />
-			<replaceFilter token="@dbUsername@" value="${server.config.dbUserName}" />
-			<replaceFilter token="@dbPassword@" value="${server.config.dbPassword}" />
-			<replaceFilter token="@dbName@" value="${server.config.dbName}" />
+				<replaceFilter token="@appId@" value="${server.config.appId}" />
+				<replaceFilter token="@appSecret@" value="${server.config.appSecret}" />
+				<replaceFilter token="@redirectURL@" value="${server.config.redirectURL}" />
+				<replaceFilter token="@baseDirectory@" value="${server.config.baseDirectory}" />
+				<replaceFilter token="@mainSWF@" value="${server.config.mainSWF}" />					<replaceFilter token="@dbUsername@" value="${server.config.dbUserName}" />
+				<replaceFilter token="@dbPassword@" value="${server.config.dbPassword}" />
+				<replaceFilter token="@dbName@" value="${server.config.dbName}" />
 		</replace>
+	</target>
+	
+	<target name="compileDebugClient" depends="init">
+		<mkdir dir="${build.url}"/>
+		<mxmlc file="${client.src}/${client.mainClass}"
+				output="${build.url}/${server.config.mainSWF}" debug="true">
+				<load-config filename="${FLEX_HOME}/frameworks/flex-config.xml"/>
+				<source-path path-element="${FLEX_HOME}/frameworks"/>
+				<source-path path-element="${client.src}"/>
+				<compiler.library-path dir="${FLEX_HOME}/frameworks" append="true">
+					<include name="libs"/>
+					<include name="../bundles/{locale}"/>
+				</compiler.library-path>
+				<compiler.library-path dir="${client.libs}" append="true">
+					<include name="*.swc"/>
+				</compiler.library-path>
+				<static-link-runtime-shared-libraries>true</static-link-runtime-shared-libraries>
+				<default-size width="760" height="480"/>
+		</mxmlc>
+	</target>
+	
+	<target name="build" depends="compileServer, compileClient, replaceTokens">
+	</target>
+	
+	<target name="debugbuild" depends="compileServer, compileDebugClient, replaceTokens">
 	</target>
 	
 	<target name="compileunittests" depends="init">

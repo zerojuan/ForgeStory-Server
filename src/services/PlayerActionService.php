@@ -22,7 +22,7 @@
 			return $player;
 		}
 		
-		function get($uid){
+		public function get($uid, $person){
 			$cn = new DbConnection();
 			$cn->Open();
 		

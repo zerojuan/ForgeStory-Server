@@ -18,18 +18,19 @@
  		var $armor;
  		var $weapon;
  		
- 		var $_explicitType = "model.Player";
+ 		var $_explicitType = "Player";
  		
  		function fill($result){
- 			$uid = $result["uid"];
- 			$username = $result["username"];
- 			$coins = $result["coins"];
- 			$head = $result["head"];
- 			$body = $result["wins"];
- 			$wins = $result["loses"];
- 			$loses = $result["isNew"];
- 			$armor = $result["armor"];
- 			$weapon = $result["weapon"];
+ 			$this->uid = $result["uid"];
+ 			$this->username = $result["username"];
+ 			$this->coins = $result["coins"];
+ 			$this->head = $result["head"];
+ 			$this->body = $result["body"];
+ 			$this->wins = $result["wins"];
+ 			$this->loses = $result["loses"];
+ 			$this->isNew = $result["isNew"];
+ 			$this->armor = $result["armor"];
+ 			$this->weapon = $result["weapon"];
  		}
  	}
 ?>
