@@ -44,7 +44,7 @@ class DbConnection
   {
     $rs = $this->_execQuery($sql);
     $recs = array();
-    while (($rec = mysql_fetch_row($rs)) != null)
+    while (($rec = mysql_fetch_assoc($rs)) != null)
       array_push($recs, $rec);
     mysql_free_result($rs);
     return $recs;

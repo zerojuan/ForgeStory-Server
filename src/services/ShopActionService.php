@@ -3,6 +3,7 @@
 	require_once "/facebook.php";
 	require_once "/database.php";
 	require_once "/config.php";
+	require_once "/models/Item.php";
 	
 	class ShopActionService{
 		
@@ -36,17 +37,40 @@
 			return "Success";
 		}
 		
+		function getItem($item){
+			$cn = new DbConnection();
+			$cn->Open();
+							
+			$dbRec = new DbRecord();
+			$dbRec->Connection = $cn;
+			$query = "SELECT * FROM items WHERE id='".$item->id."'";
+			$result = $dbRec->Get($query);
+				
+			$cn->Close();
+			
+			$item->fill($result);
+				
+			return $item;
+		}
 		
-		function getShopInventory($uid){
+		
+		function getShopInventory($uid, $item){		
 			$cn = new DbConnection();
 			$cn->Open();
 			
 			$query = "SELECT * FROM items WHERE forger_id='".$uid."'";
-			$result = $cn->GetDataSet($query);
+			$results = $cn->GetDataSet($query);
 	
 			$cn->Close();
 			
-			return json_encode($result);
+			$itemList = array();
+			foreach($results as $result){
+				$item = new Item();
+				$item->fill($result);
+				array_push($itemList, $item);
+			}
+			
+			return $itemList;
 		}
 		
 		

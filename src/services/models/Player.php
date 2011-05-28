@@ -32,5 +32,6 @@
  			$this->armor = $result["armor"];
  			$this->weapon = $result["weapon"];
  		}
+
  	}
 ?>
