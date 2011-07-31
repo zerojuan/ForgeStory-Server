@@ -1,9 +1,9 @@
 <project name="ForgeStory" basedir="." default="debugbuild">
 	<target name="init">
-		<propertyfile file="build.properties">
+		<propertyfile file="deploy.properties">
 			<entry key="build.number" type="int" operation="+" value="1" pattern="00"/>
 		</propertyfile>
-		<property file = "build.properties"/>
+		<property file = "deploy.properties"/>
 		
 		<taskdef resource="flexTasks.tasks" classpath="${FLEX_TASKS}"/>
 		
@@ -22,6 +22,9 @@
 					<include name="../bundles/{locale}"/>
 				</compiler.library-path>
 				<compiler.library-path dir="${client.libs}" append="true">
+					<include name="*.swc"/>
+				</compiler.library-path>
+				<compiler.library-path dir="${client.root}/lib" append="true">
 					<include name="*.swc"/>
 				</compiler.library-path>
 				<static-link-runtime-shared-libraries>true</static-link-runtime-shared-libraries>
@@ -46,6 +49,13 @@
 				<file file="${server.src}/facebook.php"/>
 			</resources>
 		</copy>
+	</target>
+	
+	<target name="copySWFToServer">
+		<property file = "build.properties"/>
+		<delete file="${build.url}/${server.config.mainSWF}" />
+		<copy file="${build.url}/DangerItems.swf" tofile="${build.url}/ForgeStory${build.number}.swf" overwrite="true" />
+		
 	</target>
 	
 	<target name="replaceTokens" depends="init">
@@ -82,6 +92,9 @@
 					<include name="../bundles/{locale}"/>
 				</compiler.library-path>
 				<compiler.library-path dir="${client.libs}" append="true">
+					<include name="*.swc"/>
+				</compiler.library-path>
+				<compiler.library-path dir="${client.root}/lib" append="true">
 					<include name="*.swc"/>
 				</compiler.library-path>
 				<static-link-runtime-shared-libraries>true</static-link-runtime-shared-libraries>
